@@ -7,31 +7,30 @@ pygame.init()
 FPS = 60
 FramePerSec = pygame.time.Clock()
 
-# Predefined some colors
+#Predefined some colors
 BLUE  = (0, 0, 255)
 RED   = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
-# Screen information
+#Screen information
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-# Setting up game variables
+#Setting up game variables
 TARGET_DIMENTIONS = (40, 40)
 TARGET_NUMBER = 5
 SPEED = 5
 SCORE = 0
+TIME = 20
 
 #Setting up Fonts
 font = pygame.font.SysFont("Verdana", 60)
 font_small = pygame.font.SysFont("Verdana", 30)
-# game_over = font.render("Game Over", True, BLACK)
 
 #Create a black screen
 DISPLAYSURF = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-DISPLAYSURF.fill(BLACK)
 pygame.display.set_caption("Game")
 
 
@@ -81,6 +80,7 @@ class Player(pygame.sprite.Sprite):
     def draw(self, surface):
         pygame.draw.rect(surface, RED, self.rect)  
 
+
 def GetScore():
     return SCORE
 
@@ -91,7 +91,7 @@ targets = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-# Calculate position of all targets
+#Calculate position of all targets
 for i in range(TARGET_NUMBER):
     newTarget = Target()
     while True:
@@ -104,9 +104,8 @@ for i in range(TARGET_NUMBER):
             targets.add(newTarget)
             break
 
-
-# Game Loop
-while True:     
+#Game Loop
+while TIME > 0:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -118,7 +117,11 @@ while True:
     #Draws the score
     scores = font_small.render(str(SCORE), True, WHITE)
     DISPLAYSURF.blit(scores, (10,10))
-    
+
+    #Draws the timer
+    timer = font_small.render(str(int(TIME)), True, WHITE)
+    DISPLAYSURF.blit(timer, (SCREEN_WIDTH//2 - 30, 10))
+
     #Moves and Re-draws all Sprites
     player.update(DISPLAYSURF)
     for entity in targets:
@@ -140,6 +143,17 @@ while True:
                 targets.add(newTarget)
                 newTarget.draw(DISPLAYSURF)
                 break
-    
+
     pygame.display.update()
     FramePerSec.tick(FPS)
+    TIME -= 1/60  #Reduce the timer by 1/60 second per frame
+
+#Draw Game Over screen
+DISPLAYSURF.fill(BLACK)
+game_over = font.render("Game End", True, WHITE)
+DISPLAYSURF.blit(game_over, (SCREEN_WIDTH//2 - 120, SCREEN_HEIGHT//2 - 30))
+pygame.display.update()
+time.sleep(5) #Time the game takes before closing itself 
+
+pygame.quit()
+sys.exit()

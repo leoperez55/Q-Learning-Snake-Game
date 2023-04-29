@@ -198,8 +198,8 @@ class Game:
                         break
 
             #Draws the score
-            scores = self.font_small.render(str(self.score), True, self.WHITE)
-            self.DISPLAY.blit(scores, (10,10))
+            scoreText = self.font.render("Score: " + str(self.score), True, self.WHITE)
+            self.DISPLAY.blit(scoreText, (10,10))
 
             #Draws the timer
             timer = self.font_small.render(str(math.ceil(playTime)), True, self.WHITE)

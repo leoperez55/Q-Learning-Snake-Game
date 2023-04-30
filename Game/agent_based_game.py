@@ -292,12 +292,12 @@ if __name__ == "__main__":
             Q[(state, action)] = 0
 
     # Q-learning hyperparameters
-    alpha = 0.4
+    alpha = 0.9
     gamma = 0.99
     epsilon_start = 1.0
     epsilon_end = 0.01
     epsilon_decay = 0.995
-    episodes = 100
+    episodes = 1
 
     game = Game(visualize=False)
 

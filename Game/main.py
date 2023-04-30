@@ -20,10 +20,10 @@ SCREEN_HEIGHT = 600
 
 #Setting up game variables
 TARGET_DIMENTIONS = (40, 40)
-TARGET_NUMBER = 5
+TARGET_NUMBER = 1
 SPEED = 5
 SCORE = 0
-TIME = 20
+TIME = 30
 
 #Setting up Fonts
 font = pygame.font.SysFont("Verdana", 60)
@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
 
         if self.rect.left > 0:
             if pressed_keys[K_LEFT]:
-                self.rect.move_ip(-5, 0)
+                self.rect.move_ip(-5, 0)   
 
         if self.rect.right < SCREEN_WIDTH:        
             if pressed_keys[K_RIGHT]:
@@ -84,20 +84,20 @@ class Player(pygame.sprite.Sprite):
 def GetScore():
     return SCORE
 
-player = Player()
+player = Player()  #Creating object of player class
 
 #Creating Sprites Groups
 targets = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-#Calculate position of all targets
+#Calculate position of all targets before drawing them on screen (make sure they won't spawn in colliding with eachother)
 for i in range(TARGET_NUMBER):
-    newTarget = Target()
+    newTarget = Target() #object of Target() class
     while True:
-        newTarget.moveTo(random.randint(newTarget.width/2, SCREEN_WIDTH - newTarget.width/2),
-                            random.randint(newTarget.height/2, SCREEN_HEIGHT - newTarget.height/2))
-        #check if newTarget is colliding with any other sprite
+        newTarget.moveTo(random.randint(newTarget.width/2, SCREEN_WIDTH - newTarget.width/2),  #x cordinate
+                            random.randint(newTarget.height/2, SCREEN_HEIGHT - newTarget.height/2))   #y cordinate
+        #check if newTarget is colliding with any other sprite already on the screen
         collision = pygame.sprite.spritecollideany(newTarget, all_sprites)
         if not collision:
             all_sprites.add(newTarget)

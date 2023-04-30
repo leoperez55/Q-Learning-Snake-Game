@@ -276,39 +276,70 @@ class Game:
 
 
 if __name__ == "__main__":
-    game = Game() # creating a game with default parameters
-    gameover = False
-    totalReward = 0
+    import random
+    import time
 
-    # this is an example of the game you would use to train the agent
-    # this game is not visualized, so it runs much faster
-    # it can calculate frames at the maximum speed your machine can handle
-    # it can play "15 second" game in 0.01 seconds, so you don't have to spend hours waiting for the agent to learn
-    print("Non-visualized game")
+    # State space
+    state_space = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1))
 
-    startTime = time.time()
-    while not gameover: # this acts as the main game loop
-        action = random.choice(list(Action)) # make an agent pick an action
-        # then call game.act(action) to perform the action
-        # game.act(action) returns a tuple (state, reward, gameover, score)
-        state, reward, gameover, score = game.act(action) 
-        # then you can do whatever you want with the returned values
-        totalReward += reward
-        print(f"Action: {action}, State: {state}, Total Reward: {totalReward}, Score: {score}")
-    endTime = time.time()
-    print(f"Time taken: {endTime - startTime}")
+    # Action space
+    action_space = list(Action)
 
+    # Initialize the Q-table with all zeros
+    Q = {}
+    for state in state_space:
+        for action in action_space:
+            Q[(state, action)] = 0
 
+    # Q-learning hyperparameters
+    alpha = 0.4
+    gamma = 0.99
+    epsilon_start = 1.0
+    epsilon_end = 0.01
+    epsilon_decay = 0.995
+    episodes = 100
 
-    # this is an example of the game you would use to see how well the agent performs
-    # this game is visualized, so it runs exactly as fast as a human would play it
-    # so it would play "15 second" game in 15 seconds
-    gameover = False
+    game = Game(visualize=False)
+
+    # Training loop
+    epsilon = epsilon_start
+    for episode in range(episodes):
+        game.reset()
+        gameover = False
+
+        while not gameover:
+            state, _ = game.getState()
+
+            # Epsilon-greedy action selection
+            if random.uniform(0, 1) < epsilon:
+                action = random.choice(action_space)
+            else:
+                action = max(action_space, key=lambda a: Q[(state, a)])
+
+            # Perform the action and receive the new state, reward, and gameover status
+            _, reward, gameover, _ = game.act(action)
+            next_state, _ = game.getState()
+
+            # Update the Q-value for the current state-action pair using the Q-learning update rule
+            old_q_value = Q[(state, action)]
+            next_q_value = max([Q[(next_state, a)] for a in action_space])
+            Q[(state, action)] = old_q_value + alpha * (reward + gamma * next_q_value - old_q_value)
+
+        # Decay epsilon to balance exploration and exploitation
+        epsilon = max(epsilon_end, epsilon * epsilon_decay)
+
+    # Test the trained agent
     game.reset(visualizeNext=True)
-    print("\n\nVisualized game")
+    gameover = False
+    total_reward = 0
 
     while not gameover:
-        action = Action.DOWN_RIGHT
-        state, reward, gameover, score = game.act(action)
-        totalReward += reward
-        # print(f"Action: {action}, State: {state}, Total Reward: {totalReward}, Score: {score}")
+        state, _ = game.getState()
+        state_action = state
+
+        action = max(Action, key=lambda a: Q.get(state_action + (a,), 0))
+
+        _, reward, gameover, _ = game.act(action)
+        total_reward += reward
+
+    print(f"Total Reward (Test): {total_reward}")

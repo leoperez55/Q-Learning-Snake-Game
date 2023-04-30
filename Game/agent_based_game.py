@@ -94,16 +94,20 @@ class Game:
 
     def _movePlayer(self, delta_x, delta_y):
         # transform raw movment to legal movment that's bound by the screen
-        if self.player.rect.top + delta_y < 0:
-            delta_y = -self.player.rect.top
-        if self.player.rect.bottom + delta_y > self.SCREEN_HEIGHT:
-            delta_y = self.SCREEN_HEIGHT - self.player.rect.bottom
-        if self.player.rect.left + delta_x < 0:
-            delta_x = -self.player.rect.left
-        if self.player.rect.right + delta_x > self.SCREEN_WIDTH:
-            delta_x = self.SCREEN_WIDTH - self.player.rect.right
+        pRect = self.player.rect
+        if pRect.top + delta_y < 0:
+            delta_y = -pRect.top
+            print(f"top: {pRect.top}")
+            print(f"bottom: {pRect.bottom}")
+            print(f"center: {pRect.center}")
+        if pRect.bottom + delta_y > self.SCREEN_HEIGHT:
+            delta_y = self.SCREEN_HEIGHT - pRect.bottom
+        if pRect.left + delta_x < 0:
+            delta_x = -pRect.left
+        if pRect.right + delta_x > self.SCREEN_WIDTH:
+            delta_x = self.SCREEN_WIDTH - pRect.right
 
-        self.player.rect.move_ip(delta_x, -delta_y)
+        self.player.rect.move_ip(delta_x, delta_y)
 
 
 
@@ -153,21 +157,21 @@ class Game:
         gameover = False
         #Move player according to action
         if action == Action.UP:
-            self._movePlayer(0, self.SPEED)
-        elif action == Action.DOWN:
             self._movePlayer(0, -self.SPEED)
+        elif action == Action.DOWN:
+            self._movePlayer(0, self.SPEED)
         elif action == Action.LEFT:
             self._movePlayer(-self.SPEED, 0)
         elif action == Action.RIGHT:
             self._movePlayer(self.SPEED, 0)
         elif action == Action.UP_LEFT:
-            self._movePlayer(-self.SPEED, self.SPEED)
-        elif action == Action.UP_RIGHT:
-            self._movePlayer(self.SPEED, self.SPEED)
-        elif action == Action.DOWN_LEFT:
             self._movePlayer(-self.SPEED, -self.SPEED)
-        elif action == Action.DOWN_RIGHT:
+        elif action == Action.UP_RIGHT:
             self._movePlayer(self.SPEED, -self.SPEED)
+        elif action == Action.DOWN_LEFT:
+            self._movePlayer(-self.SPEED, self.SPEED)
+        elif action == Action.DOWN_RIGHT:
+            self._movePlayer(self.SPEED, self.SPEED)
 
         #To be run if collision occurs between Player and Target
         collision = pygame.sprite.spritecollideany(self.player, self.targets)
@@ -304,7 +308,7 @@ if __name__ == "__main__":
     print("\n\nVisualized game")
 
     while not gameover:
-        action = random.choice(list(Action))
+        action = Action.DOWN_RIGHT
         state, reward, gameover, score = game.act(action)
         totalReward += reward
-        print(f"Action: {action}, State: {state}, Total Reward: {totalReward}, Score: {score}")
+        # print(f"Action: {action}, State: {state}, Total Reward: {totalReward}, Score: {score}")

@@ -97,9 +97,6 @@ class Game:
         pRect = self.player.rect
         if pRect.top + delta_y < 0:
             delta_y = -pRect.top
-            print(f"top: {pRect.top}")
-            print(f"bottom: {pRect.bottom}")
-            print(f"center: {pRect.center}")
         if pRect.bottom + delta_y > self.SCREEN_HEIGHT:
             delta_y = self.SCREEN_HEIGHT - pRect.bottom
         if pRect.left + delta_x < 0:

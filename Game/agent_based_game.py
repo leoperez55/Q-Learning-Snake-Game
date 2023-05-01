@@ -36,7 +36,7 @@ class Game:
         self.TARGET_NUMBER = 3              #Number of targets on the screen at once
         self.SPEED = 5
         self.GAME_DURATION = runtime        #How long one game is (15 seconds from parameters)
-        self.GAME_DURATION_IN_FRAMES = runtime * fps
+        self.GAME_DURATION_IN_FRAMES = runtime * fps   #How long training will be = total number of frames and how fast your computer can run thru them
         self.remainingTime = self.GAME_DURATION
         self.remainingFrames = self.GAME_DURATION_IN_FRAMES
 

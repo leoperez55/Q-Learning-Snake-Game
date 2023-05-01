@@ -94,14 +94,15 @@ class Game:
 
     def _movePlayer(self, delta_x, delta_y):
         # transform raw movment to legal movment that's bound by the screen
-        if self.player.rect.top + delta_y < 0:
-            delta_y = -self.player.rect.top
-        if self.player.rect.bottom + delta_y > self.SCREEN_HEIGHT:
-            delta_y = self.SCREEN_HEIGHT - self.player.rect.bottom
-        if self.player.rect.left + delta_x < 0:
-            delta_x = -self.player.rect.left
-        if self.player.rect.right + delta_x > self.SCREEN_WIDTH:
-            delta_x = self.SCREEN_WIDTH - self.player.rect.right
+        pRect = self.player.rect
+        if pRect.top + delta_y < 0:
+            delta_y = -pRect.top
+        if pRect.bottom + delta_y > self.SCREEN_HEIGHT:
+            delta_y = self.SCREEN_HEIGHT - pRect.bottom
+        if pRect.left + delta_x < 0:
+            delta_x = -pRect.left
+        if pRect.right + delta_x > self.SCREEN_WIDTH:
+            delta_x = self.SCREEN_WIDTH - pRect.right
 
         self.player.rect.move_ip(delta_x, -delta_y)
 

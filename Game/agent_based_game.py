@@ -200,8 +200,8 @@ class Game:
 
 
         #Runs after everytime the snake moves
-        newState, target = self.getState()     #Returns state of the game (i.e. where the closest target is according to the snake) (ex. (1,-1) = closest target is to the bottom right)
-                                               #returns closest target as well
+        newState, target = self.getState()  #Returns state of the game (i.e. where the closest target is according to the snake) (ex. (1,-1) = closest target is to the bottom right)
+                                            #returns closest target as well
 
 
         #Visualize the game if 'vizualization' variable = true, at the beginning parameters
@@ -305,8 +305,8 @@ if __name__ == "__main__":
         
         action = random.choice(list(Action)) #makes the agent pick an action from the actions list (i.e. Up,Down,Left,Right......) and stores it in action variable
         
-        state, reward, gameover, score = game.act(action) #Then call game.act(action) to perform the action
-                                                          #game.act(action) returns a tuple (state, reward, gameover, score)
+        state, reward, gameover, score = game.act(action)   #Then call game.act(action) to perform the action
+                                                            #game.act(action) returns a tuple (state, reward, gameover, score)
         
         totalReward += reward #Then you can do whatever you want with the returned values
         

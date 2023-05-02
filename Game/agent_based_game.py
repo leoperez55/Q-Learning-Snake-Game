@@ -348,7 +348,7 @@ class Game:
             self.remainingFrames -= 1
             if self.remainingFrames <= 0:
                 self.gameover = True
-        return (newState, reward, gameover, self.score)
+        return (newState, reward, self.gameover, self.score)
 
     # State = (x, y), where
     # x is direction on horizontal axis

@@ -70,11 +70,11 @@ class QLearning:
         epsilon = self.epsilon_start
         for episode in range(self.episodes):
             # visualize every 10 episodes
-            if (episode) % 10 == 0:
-                # game.reset(visualizeNext=True)
-                self.printQTable()
-            else:
-                game.reset()
+            # if (episode) % 10 == 0:
+            #     # game.reset(visualizeNext=True)
+            #     self.printQTable()
+            # else:
+            #     game.reset()
             self.game.reset(visualizeNext=False)
             gameover = False
             state, _ = self.game.getState()
@@ -153,8 +153,8 @@ class QLearning:
 
 
 if __name__ == "__main__":
-    game = Game(target_reward=10, runtime=5)
-    agent = QLearning(game, episodes=3000, alpha=0.5, epsilon_start=0.9)
+    game = Game(target_reward=10, runtime=10)
+    agent = QLearning(game, episodes=2000, alpha=0.5, epsilon_start=0.9)
 
     agent.printQTable()
     agent.train()

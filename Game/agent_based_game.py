@@ -14,7 +14,7 @@ class Action(Enum):
     DOWN_RIGHT = 8
 
 class Game:
-    def __init__(self, runtime=30, fps=60, target_reward=100, miss_reward=-1, visualize=False):
+    def __init__(self, runtime=15, fps=60, target_reward=100, miss_reward=-1, visualize=False):
         # Initialize Pygame after __main__ is executed
         self.initialized = False
         self._initializeGame()      #Sets the 'initialized' bool variable to true/ enables pygame modules to work / gives display window the name "game"
@@ -121,6 +121,11 @@ class Game:
         pygame.init() #Initializes all pygame.modules/Otherwise pygame modules wouldn't work
         pygame.display.set_caption("Game") #Initializes the NAME of the window where the game will be played
 
+
+        #Creating Sprites Groups
+        # self.targets = pygame.sprite.Group()
+        # self.all_sprites = pygame.sprite.Group()
+        # self.all_sprites.add(self.player)
     #Calculate position of all targets
     def _initializeTargets(self):
         for i in range(self.TARGET_NUMBER):  #calculates the location of where our targets will spawn in  (number of targets is set at the start of the game)

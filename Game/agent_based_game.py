@@ -14,7 +14,7 @@ class Action(Enum):
     DOWN_RIGHT = 8
 
 class Game:
-    def __init__(self, runtime=15, fps=60, target_reward=100, miss_reward=-1, visualize=False):
+    def __init__(self, runtime=30, fps=60, target_reward=100, miss_reward=-1, visualize=False):
         # Initialize Pygame after __main__ is executed
         self.initialized = False
         self._initializeGame()      #Sets the 'initialized' bool variable to true/ enables pygame modules to work / gives display window the name "game"
@@ -33,7 +33,7 @@ class Game:
         self.MISS_REWARD = miss_reward      #set to -1 from parameters
         self.PLAYER_DIMENTIONS = (80, 80)   #The size of the snake head
         self.TARGET_DIMENTIONS = (40, 40)   #Size of the targets
-        self.TARGET_NUMBER = 3              #Number of targets on the screen at once
+        self.TARGET_NUMBER = 1              #Number of targets on the screen at once
         self.SPEED = 5
         self.GAME_DURATION = runtime        #How long one game is (15 seconds from parameters)
         self.GAME_DURATION_IN_FRAMES = runtime * fps   #How long training will be = total number of frames and how fast your computer can run thru them
@@ -151,7 +151,12 @@ class Game:
         self.player.moveTo(self.SCREEN_WIDTH//2, self.SCREEN_HEIGHT//2)
 
     
-    #Runs after every move the snake makes
+    #This function Runs after every move the snake makes
+    #This function moves the snake according to what action is passed
+    #This fucntion detects if collision occured if so add reward/calls for more targets to be generated
+    #This function also rewards negetive points if no target was eatin during said action
+    #This function also returns the state of the game (where the target is in relation to the snake)
+    #This function also vizualises the game/checks if its game over
     def act(self, action: Action):
         for event in pygame.event.get(): #Looks through pyGame eventQueue and check if any of the events were 'quit' (clicking X to close window)
             if event.type == QUIT:
@@ -306,7 +311,7 @@ if __name__ == "__main__":
         action = random.choice(list(Action)) #makes the agent pick an action from the actions list (i.e. Up,Down,Left,Right......) and stores it in action variable
         
         state, reward, gameover, score = game.act(action) #Then call game.act(action) to perform the action
-                                                          #game.act(action) returns a tuple (state, reward, gameover, score)
+                                                          #game.act(action) returns a tuple (current state, reward, gameover, score)
         
         totalReward += reward #Then you can do whatever you want with the returned values
         

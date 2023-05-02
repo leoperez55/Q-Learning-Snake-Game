@@ -1,16 +1,10 @@
 from agent_based_game import Game, Action
 import random
 import time
+import pandas as pd
 
 class QLearning:
-    def __init__(self, 
-                game,
-                alpha = 0.5,
-                gamma = 0.99,
-                epsilon_start = 0.6,
-                epsilon_end = 0.01,
-                epsilon_decay = 0.003,
-                episodes = 1000):
+    def __init__(self,  game, alpha = 0.5, gamma = 0.99, epsilon_start = 0.6, epsilon_end = 0.01, epsilon_decay = 0.003, episodes = 100):
         self.game = game
         self.alpha = alpha
         self.gamma = gamma
@@ -30,6 +24,19 @@ class QLearning:
         for state in self.state_space:
             for action in self.action_space:
                 self.Q[(state, action)] = 0
+    
+    
+    def printQTable(self):
+        print(
+            pd.DataFrame(
+                [
+                    [self.Q[(state, action)] for state in self.state_space]
+                    for action in self.action_space
+                ],
+                index=self.action_space,
+                columns=self.state_space,
+            )
+        )
 
 
     def train(self):
@@ -37,10 +44,11 @@ class QLearning:
         epsilon = self.epsilon_start
         for episode in range(self.episodes):
             # visualize every 10 episodes
-            # if (episode) % 100 == 0:
-            #     game.reset(visualizeNext=True)
-            # else:
-            #     game.reset()
+            if (episode) % 10 == 0:
+                #game.reset(visualizeNext=True)
+                self.printQTable()
+            else:
+                game.reset()
             self.game.reset(visualizeNext=False)
             gameover = False
             state, _ = self.game.getState()
@@ -48,27 +56,25 @@ class QLearning:
 
             while not gameover:
                 # Epsilon-greedy action selection
-                if random.uniform(0, 1) < epsilon:
+                if random.uniform(0, 1) < epsilon: #If True, the agent chooses a random action from the action space
                     action = random.choice(self.action_space)
                 else:
-                    action = max(self.action_space, key=lambda a: self.Q[(state, a)])
+                    action = max(self.action_space, key=lambda a: self.Q[(state, a)]) #selects the action with the highest Q-value for the current state.
 
                 # Perform the action and receive the new state, reward, and gameover status
                 next_state, reward, gameover, _ = self.game.act(action)
-                total_reward += reward
+                total_reward += reward #Everytime the snake has positive action (i.e. mvoes closer to a target or eats it increase reward)
 
                 # Update the Q-value for the current state-action pair using the Q-learning update rule
                 old_q_value = self.Q[(state, action)]
-                next_q_value = max([self.Q[(next_state, a)] for a in self.action_space])
-                self.Q[(state, action)] = old_q_value + self.alpha * (reward + self.gamma * next_q_value - old_q_value)
-                state = next_state
+                next_q_value = max([self.Q[(next_state, a)] for a in self.action_space]) #Finds the Q-Value of the next best move the snake can make
+                self.Q[(state, action)] = old_q_value + self.alpha * (reward + self.gamma * next_q_value - old_q_value)  ### BellMan equation to calculate new Q-value ###
+                state = next_state #Updates the 'state' variable to the state the snake is in after taking one action(moving)
 
             print(f"Episode {episode + 1}/{self.episodes} completed")
             # print(f"Total Reward (Train): {total_reward}")
-            # print Q-table
-            # for state in state_space:
-            #     for action in action_space:
-            #         print(f"Q[{state}, {action}]: {Q[(state, action)]}")
+            #print Q-table
+            #self.printQTable()
 
             # Decay epsilon to balance exploration and exploitation
             epsilon = max(self.epsilon_end, epsilon * self.epsilon_decay)

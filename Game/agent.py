@@ -1,10 +1,12 @@
 from agent_based_game import Game, Action
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import random
 import time
 import os
 
+#%matplotlib inline
 
 class QLearning:
     def __init__(
@@ -21,6 +23,7 @@ class QLearning:
         self.alpha = alpha
         self.gamma = gamma
         self.episodes = episodes
+        self.history = np.empty((0, 2), float)
         if start_decay_episode is None:
             self.start_decay_episode = episodes // 2
         else:
@@ -28,8 +31,7 @@ class QLearning:
         self.epsilon_start = epsilon_start
         self.epsilon_end = epsilon_end
         self.epsilon_decay = (self.epsilon_start - self.epsilon_end) / (
-            self.episodes - self.start_decay_episode
-        )
+            self.episodes - self.start_decay_episode)
         self.Q = {}
         # State space
         self.state_space = [
@@ -69,12 +71,11 @@ class QLearning:
         # Training loop
         epsilon = self.epsilon_start
         for episode in range(self.episodes):
-            # visualize every 10 episodes
-            # if (episode) % 10 == 0:
-            #     # game.reset(visualizeNext=True)
-            #     self.printQTable()
+            # visualize every 500 episodes
+            # if (episode+1) % 500 == 0:
+            #     self.game.reset(visualizeNext=True)
             # else:
-            #     game.reset()
+            #     self.game.reset()
             self.game.reset(visualizeNext=False)
             gameover = False
             state, _ = self.game.getState()
@@ -83,9 +84,7 @@ class QLearning:
 
             while not gameover:
                 # Epsilon-greedy action selection
-                if (
-                    random.uniform(0, 1) < epsilon
-                ):  # If True, the agent chooses a random action from the action space
+                if random.uniform(0, 1) > epsilon:
                     action = random.choice(self.action_space)
                 else:
                     action = max(
@@ -95,7 +94,6 @@ class QLearning:
                 # Perform the action and receive the new state, reward, and gameover status
                 next_state, reward, gameover, score = self.game.act(action)
                 total_reward += reward
-
                 # Update the Q-value for the current state-action pair using the Q-learning update rule
                 old_q_value = self.Q[(state, action)]
                 max_future_q_value = max(
@@ -114,6 +112,7 @@ class QLearning:
                 # self.printQTable()
 
             print(f"Episode {episode + 1}/{self.episodes} completed")
+            self.history = np.append(self.history, [[total_reward, score]], axis=0)
             # print(f"Score: {score}")
             # print(f"Total Reward (Train): {total_reward}")
 
@@ -151,13 +150,36 @@ class QLearning:
             )
         )
 
+    def graphHistory(self):
+        # Plot the model history for each model in a single plot
+        # model history is a plot of accuracy vs number of epochs
+        # you may want to create a large sized plot to show multiple lines
+        # in a same figure2
+        fig = plt.figure(figsize=(30,40))
+        fig.suptitle('Agent Performance', fontsize=30)
+        plt.rcParams.update({'font.size': 22})
+
+        plt.subplot(2, 1, 1)
+        plt.plot(self.history[:, 0], label='Total Agent Reward per Episode')
+        plt.ylabel('Reward')
+        plt.xlabel('Episodes')
+        plt.legend(loc='lower right')
+        
+        plt.subplot(2, 1, 2)
+        plt.plot(self.history[:, 1], label='Game Score per Episode')
+        plt.ylabel('Score')
+        plt.xlabel('Episodes')
+        plt.legend(loc='lower right')
+
+        plt.show()
 
 if __name__ == "__main__":
-    game = Game(target_reward=10, runtime=10)
-    agent = QLearning(game, episodes=2000, alpha=0.5, epsilon_start=0.9)
+    game = Game(runtime=15, move_reward=1, target_reward=100)
+    agent = QLearning(game, episodes=1000, alpha=0.5, epsilon_start=0.9)
 
     agent.printQTable()
     agent.train()
     agent.printQTable()
+    agent.graphHistory()
     while True:
         agent.test()

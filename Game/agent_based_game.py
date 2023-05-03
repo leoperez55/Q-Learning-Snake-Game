@@ -17,7 +17,7 @@ class Action(Enum):
 
 class Game:
     def __init__(
-        self, runtime=15, fps=60, target_reward=100, miss_reward=-1, visualize=False
+        self, runtime=15, fps=60, target_reward=100, move_reward=1, miss_reward=-1, visualize=False
     ):
         # Initialize Pygame after __main__ is executed
         self.initialized = False
@@ -38,7 +38,8 @@ class Game:
 
         # Setting up game variables
         self.score = 0
-        self.TARGET_REWARD = target_reward  # set to 100  from parameters
+        self.TARGET_REWARD = target_reward  # set to 100 from parameters
+        self.MOVE_DIRECTION_REWARD = move_reward  # set to 1 from parameters
         self.MISS_REWARD = miss_reward  # set to -1 from parameters
         self.PLAYER_DIMENTIONS = (80, 80)  # The size of the snake head
         self.TARGET_DIMENTIONS = (40, 40)  # Size of the targets
@@ -264,7 +265,7 @@ class Game:
         distanceToTargetAfter = self._getDistanceToClosestTarget()
         # If player is closer to the target than in the previous frame, give reward
         if distanceToTargetAfter < distanceToTargetBefore:
-            reward = self.TARGET_REWARD
+            reward = self.MOVE_DIRECTION_REWARD
         else:
             reward = self.MISS_REWARD
 
@@ -272,6 +273,7 @@ class Game:
         collision = pygame.sprite.spritecollideany(self.player, self.targets)
         if collision:
             self.score += 1  # If the snake moved and ate a target add 1 to the score
+            reward += self.TARGET_REWARD
             collision.kill()
             newTarget = self.Target(self.TARGET_DIMENTIONS, self.BLUE)
             while True:
@@ -379,20 +381,36 @@ class Game:
             return (0, 0), None
 
         # Calculate the state of the game in horizontal axis
-        if self.player.rect.right < closestTarget.rect.left:
+        if self.player.rect.x < closestTarget.rect.x:
             x = 1
-        elif self.player.rect.left > closestTarget.rect.right:
+        elif self.player.rect.x > closestTarget.rect.x:
             x = -1
         else:
             x = 0
 
         # Calculate the state of the game in vertical axis
-        if self.player.rect.top > closestTarget.rect.bottom:
+        if self.player.rect.y > closestTarget.rect.y:
             y = 1
-        elif self.player.rect.bottom < closestTarget.rect.top:
+        elif self.player.rect.y < closestTarget.rect.y:
             y = -1
         else:
             y = 0
+
+
+        # if self.player.rect.right < closestTarget.rect.left:
+        #     x = 1
+        # elif self.player.rect.left > closestTarget.rect.right:
+        #     x = -1
+        # else:
+        #     x = 0
+
+        # # Calculate the state of the game in vertical axis
+        # if self.player.rect.top > closestTarget.rect.bottom:
+        #     y = 1
+        # elif self.player.rect.bottom < closestTarget.rect.top:
+        #     y = -1
+        # else:
+        #     y = 0
 
         return (x, y), closestTarget
 

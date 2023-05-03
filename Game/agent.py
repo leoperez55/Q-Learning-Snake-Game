@@ -31,8 +31,7 @@ class QLearning:
         self.epsilon_start = epsilon_start
         self.epsilon_end = epsilon_end
         self.epsilon_decay = (self.epsilon_start - self.epsilon_end) / (
-            self.episodes - self.start_decay_episode
-        )
+            self.episodes - self.start_decay_episode)
         self.Q = {}
         # State space
         self.state_space = [
@@ -161,14 +160,12 @@ class QLearning:
         plt.show()
 
 if __name__ == "__main__":
-    game = Game(target_reward=10, runtime=5)
-    agent = QLearning(game, episodes=500, alpha=0.5, epsilon_start=0.9)
+    game = Game(runtime=15, move_reward=1, target_reward=100)
+    agent = QLearning(game, episodes=1000, alpha=0.5, epsilon_start=0.9)
 
     agent.printQTable()
     agent.train()
     agent.printQTable()
-    print(agent.history)
-    print(agent.history.shape)
     agent.graphHistory()
     while True:
         agent.test()

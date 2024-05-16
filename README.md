@@ -1,5 +1,9 @@
 # Q-Learning Project
 
+The intended purpose of this project was to create a snake-like game that teaches itself to play and achieve the best score 
+within a user-determined time interval (In this example we chose 15 seconds). This was achieved using reinforcement learning
+with a Q-learning approach.
+
 **python Agent.py** to start the game training.
 
 https://github.com/leoperez55/Q-Learning-Snake-Game/assets/89830131/dbd264cd-24c9-4d4d-8155-9db88f13bc36

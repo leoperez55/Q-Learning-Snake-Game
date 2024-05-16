@@ -162,13 +162,11 @@ class Game:
             )  # Makes an object of the target class and stores it in variable "new Target" and jumps to Target() to create our new target
             while True:
                 newTarget.moveTo(
-                    random.randint(
-                        newTarget.width / 2, self.SCREEN_WIDTH - newTarget.width / 2
-                    ),  # calculates x
-                    random.randint(
-                        newTarget.height / 2, self.SCREEN_HEIGHT - newTarget.height / 2
-                    ),
-                )  # calculates y of each new target being created and uses the moveTo() to move the target there                #check if newTarget is colliding with any other sprite
+                                int(random.randint(newTarget.width // 2, self.SCREEN_WIDTH - newTarget.width // 2)), #Calculates X
+                                int(random.randint(newTarget.height // 2, self.SCREEN_HEIGHT - newTarget.height // 2))
+                                )  # calculates y of each new target being created and uses the moveTo() to move the target there                
+                
+                #check if newTarget is colliding with any other sprite
                 collision = pygame.sprite.spritecollideany(
                     newTarget, self.all_sprites
                 )  # Checks if the newly created target will spawn in on an existing target or snake head
@@ -278,13 +276,9 @@ class Game:
             newTarget = self.Target(self.TARGET_DIMENTIONS, self.BLUE)
             while True:
                 newTarget.moveTo(
-                    random.randint(
-                        newTarget.width / 2, self.SCREEN_WIDTH - newTarget.width / 2
-                    ),
-                    random.randint(
-                        newTarget.height / 2, self.SCREEN_HEIGHT - newTarget.height / 2
-                    ),
-                )
+                                int(random.randint(newTarget.width // 2, self.SCREEN_WIDTH - newTarget.width // 2)),
+                                int(random.randint(newTarget.height // 2, self.SCREEN_HEIGHT - newTarget.height // 2))
+                            )
                 # check if newTarget is colliding with any other sprite
                 collision = pygame.sprite.spritecollideany(newTarget, self.all_sprites)
                 if not collision:
